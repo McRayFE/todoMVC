@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>todoMVC</title>
+    <link href="./css/base.css" rel="stylesheet">
+    <link href="./css/index.css" rel="stylesheet">
+</head>
+<body ng-app="Todos">
+        <section class="todoapp" ng-controller="TodoController">
+            <header class="header">
+                <h1>todos</h1>
+                <form ng-submit="add()">
+                    <input ng-model="text" class="new-todo" placeholder="What needs to be done?" autofocus>
+                </form>
+            </header>
+            <section class="main">
+                <input class="toggle-all" type="checkbox">
+                <label for="toggle-all">Mark all as complete</label>
+                <ul class="todo-list">
+                    <li ng-repeat="(key,todo) in todos">
+                        <div class="view">
+                            <input ng-click="done(key)" class="toggle" type="checkbox" ng-checked="todo.flag">
+                            <label>{{todo.text}}</label>
+                            <button class="destroy"></button>
+                        </div>
+                        <input class="edit" value="Create a TodoMVC template">
+                    </li>
+                    <li><h5>已完成</h5></li>
+                    <li  class="completed" ng-repeat="(key,donetodo) in doneTodos">
+                        <div class="view">
+                            <input class="toggle" type="checkbox" ng-checked="donetodo.flag" ng-click="undone(key)">
+                            <label>{{donetodo.text}}</label>
+                            <button class="destroy" ></button>
+                        </div>
+                        <input class="edit" value="Rule the web">
+                    </li>
+                </ul>
+            </section>
+            <footer class="footer">
+                <span class="todo-count"><strong></strong> item left:{{count}}</span>
+                <button class="clear-completed" ng-click="clear()">Clear completed</button>
+            </footer>
+        </section>
+        <footer class="info">
+            <p>Double-click to edit a todo</p>
+            <p>Template by <a href="http://sindresorhus.com">Sindre Sorhus</a></p>
+            <p>Created by <a href="http://todomvc.com">you</a></p>
+            <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+        </footer>
+        <script src="../node_modules/angular/angular.min.js"></script>
+        <script>
+            var Todos = angular.module('Todos',[]);
+
+            Todos.controller('TodoController',['$scope',function($scope){
+//                    $scope.todos = [
+//                        {text:'洗脸',flag:false},
+//                        {text:'吃饭',flag:false},
+//                        {text:'上课',flag:false}
+//                    ];
+
+                    //待办事项
+                  $scope.todos = [];
+                  //待办事项的数目
+                $scope.count = 0;
+                  //已完成事项
+                $scope.doneTodos = [];
+                    //添加事项
+                   $scope.add = function(){
+                       //新增待办事项
+                       $scope.todos.push({text:$scope.text,flag:false});
+                       //清空表单
+                       $scope.text = '';
+                       $scope.count = $scope.todos.length;
+                   };
+                   $scope.done = function(key){
+                     //splice()
+                       var todo = $scope.todos.splice(key,1)[0];
+                       $scope.doneTodos.push(todo);
+                       $scope.count = $scope.todos.length;
+                   };
+                   $scope.undone = function(key){
+                       var todo = $scope.doneTodos.splice(key,1)[0];
+                       $scope.todos.push(todo);
+                       $scope.count = $scope.todos.length;
+                   };
+                   $scope.clear = function(){
+                       $scope.doneTodos = [];
+                   }
+            }]);
+        </script>
+</body>
+</html>
